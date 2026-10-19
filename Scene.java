@@ -1,33 +1,58 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Scene {
-    public final List<Entity> entities;
-    public final AABB world;
-    public final int[][] grid;
+    public final List<Entite> entites;
+    public final BoiteEnglobante monde;
+    public final int[][] grille;
 
-    public Scene(List<Entity> entities, AABB world, int[][] grid) {
-        this.entities = entities;
-        this.world = world;
-        this.grid = grid;
+    public Scene(List<Entite> entites, BoiteEnglobante monde, int[][] grille) {
+        this.entites = entites;
+        this.monde = monde;
+        this.grille = grille;
     }
 
-    public List<Entity> players() {
-        List<Entity> l = new ArrayList<>();
-        for (Entity e : entities) if (e.type == Entity.PLAYER) l.add(e);
-        return l;
+    public List<Entite> joueurs() {
+        List<Entite> joueurs = new ArrayList<>();
+        for (Entite entite : entites) {
+            if (entite.type == Entite.JOUEUR) {
+                joueurs.add(entite);
+            }
+        }
+        return joueurs;
     }
 
-    public void step(double dt) {
-        for (Entity e : entities) {
-            if (e.vx == 0 && e.vy == 0) continue;
-            e.x += e.vx * dt;
-            e.y += e.vy * dt;
-            if (e.x - e.radius < world.minX) { e.x = world.minX + e.radius; e.vx = -e.vx; }
-            if (e.x + e.radius > world.maxX) { e.x = world.maxX - e.radius; e.vx = -e.vx; }
-            if (e.y - e.radius < world.minY) { e.y = world.minY + e.radius; e.vy = -e.vy; }
-            if (e.y + e.radius > world.maxY) { e.y = world.maxY - e.radius; e.vy = -e.vy; }
+    public void avancer(double duree) {
+        for (Entite entite : entites) {
+            if (estImmobile(entite)) continue;
+
+            entite.x += entite.vitesseX * duree;
+            entite.y += entite.vitesseY * duree;
+
+            rebondirSurLesBordsDuMonde(entite);
+        }
+    }
+
+    private boolean estImmobile(Entite entite) {
+        return entite.vitesseX == 0 && entite.vitesseY == 0;
+    }
+
+    private void rebondirSurLesBordsDuMonde(Entite entite) {
+        if (entite.x - entite.rayon < monde.xMin) {
+            entite.x = monde.xMin + entite.rayon;
+            entite.vitesseX = -entite.vitesseX;
+        }
+        if (entite.x + entite.rayon > monde.xMax) {
+            entite.x = monde.xMax - entite.rayon;
+            entite.vitesseX = -entite.vitesseX;
+        }
+        if (entite.y - entite.rayon < monde.yMin) {
+            entite.y = monde.yMin + entite.rayon;
+            entite.vitesseY = -entite.vitesseY;
+        }
+        if (entite.y + entite.rayon > monde.yMax) {
+            entite.y = monde.yMax - entite.rayon;
+            entite.vitesseY = -entite.vitesseY;
         }
     }
 }
