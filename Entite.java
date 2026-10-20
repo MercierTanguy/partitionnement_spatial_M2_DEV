@@ -1,36 +1,42 @@
 public class Entite {
     public static final int VIDE = 0, OBSTACLE = 1, JOUEUR = 2;
 
-    public final int identifiant;
-    public double x, y, vitesseX, vitesseY;
+    public final int id;
+    public double positionX, positionY, vitesseX, vitesseY;
     public double rayon;
     public int type;
 
-    public Entite(int identifiant, double x, double y, double rayon, int type) {
-        this.identifiant = identifiant;
-        this.x = x;
-        this.y = y;
+    public Entite(int id, double positionX, double positionY, double rayon, int type) {
+        this.id = id;
+        this.positionX = positionX;
+        this.positionY = positionY;
         this.rayon = rayon;
         this.type = type;
     }
 
-    public BoiteEnglobante boiteEnglobante() {
-        return new BoiteEnglobante(x - rayon, y - rayon, x + rayon, y + rayon);
+    public LimitesSpatiales calculerLimites() {
+        return new LimitesSpatiales(
+                positionX - rayon,
+                positionY - rayon,
+                positionX + rayon,
+                positionY + rayon);
     }
 
-    public double distanceCarreeVers(double pointX, double pointY) {
-        double ecartX = x - pointX;
-        double ecartY = y - pointY;
+    public double calculerDistanceCarree(double pointX, double pointY) {
+        double ecartX = positionX - pointX;
+        double ecartY = positionY - pointY;
         return ecartX * ecartX + ecartY * ecartY;
     }
 
-    public boolean enCollisionAvec(Entite autre) {
-        double sommeDesRayons = rayon + autre.rayon;
-        return distanceCarreeVers(autre.x, autre.y) < sommeDesRayons * sommeDesRayons;
+    public boolean estEnCollisionAvec(Entite autreEntite) {
+        double rayonTotal = rayon + autreEntite.rayon;
+        return calculerDistanceCarree(autreEntite.positionX, autreEntite.positionY)
+                < rayonTotal * rayonTotal;
     }
 
     @Override
     public String toString() {
-        return "Entite#" + identifiant + "(" + x + "," + y + ",rayon=" + rayon + ")";
+        return "Entite#" + id + "(" + positionX + "," + positionY
+                + ",rayon=" + rayon + ")";
     }
 }

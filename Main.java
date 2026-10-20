@@ -1,5 +1,5 @@
 public class Main {
-    static final String[] CARTE = {
+    static final String[] GRILLE = {
             "11111111111111111111",
             "10000000000000000001",
             "10011100000001100001",
@@ -12,49 +12,58 @@ public class Main {
             "11111111111111111111"
     };
 
-    static final int NOMBRE_DE_PAS = 10;
-    static final double DUREE_D_UN_PAS = 0.1;
+    static final int NOMBRE_ETAPES = 10;
+    static final double DUREE_ETAPE = 0.1;
 
-    public static void main(String[] args) {
-        Scene sceneDepuisCarte = ChargeurDeScene.depuisGrille(CARTE);
-        System.out.println("Carte : " + sceneDepuisCarte.entites.size() + " entités, monde " + sceneDepuisCarte.monde);
-        afficherGrille(sceneDepuisCarte);
+    public static void main(String[] arguments) {
+        Scene sceneChargee = LecteurGrille.lireGrille(GRILLE);
+        System.out.println("Carte : " + sceneChargee.entites.size()
+                + " entités, monde " + sceneChargee.monde);
+        afficherGrille(sceneChargee);
 
-        Entite joueur = sceneDepuisCarte.joueurs().get(0);
-        System.out.println("Joueur : id=" + joueur.identifiant + " position=(" + joueur.x + ", " + joueur.y + ")\n");
+        Entite joueur = sceneChargee.joueurs().get(0);
+        System.out.println("Joueur : id=" + joueur.id
+                + " position=(" + joueur.positionX + ", " + joueur.positionY + ")\n");
 
-        Scene sceneAleatoire = GenerateurDeScene.generer(
+        Scene niveauAleatoire = GenerateurNiveau.generer(
                 1000, 500,
-                GenerateurDeScene.Repartition.REGROUPEE,
-                GenerateurDeScene.Tailles.VARIABLES,
+                GenerateurNiveau.Repartition.REGROUPEE,
+                GenerateurNiveau.Tailles.VARIABLES,
                 3.0,
                 5.0,
                 1L);
 
-        Entite premiereEntite = sceneAleatoire.entites.get(0);
-        System.out.printf("Scène aléatoire : %d entités. Entité 0 avant : (%.2f, %.2f)%n",
-                sceneAleatoire.entites.size(), premiereEntite.x, premiereEntite.y);
+        Entite premiereEntite = niveauAleatoire.entites.get(0);
+        System.out.printf("Niveau aléatoire : %d entités. Entité 0 avant : (%.2f, %.2f)%n",
+                niveauAleatoire.entites.size(),
+                premiereEntite.positionX,
+                premiereEntite.positionY);
 
-        for (int pas = 0; pas < NOMBRE_DE_PAS; pas++) {
-            sceneAleatoire.avancer(DUREE_D_UN_PAS);
+        for (int etape = 0; etape < NOMBRE_ETAPES; etape++) {
+            niveauAleatoire.avancer(DUREE_ETAPE);
         }
-        System.out.printf("Entité 0 après %d pas : (%.2f, %.2f)%n",
-                NOMBRE_DE_PAS, premiereEntite.x, premiereEntite.y);
+
+        System.out.printf("Entité 0 après %d étapes : (%.2f, %.2f)%n",
+                NOMBRE_ETAPES,
+                premiereEntite.positionX,
+                premiereEntite.positionY);
     }
 
     static void afficherGrille(Scene scene) {
         for (int[] ligne : scene.grille) {
             StringBuilder texte = new StringBuilder();
-            for (int casePleine : ligne) {
-                texte.append(caractereDe(casePleine));
+
+            for (int typeCase : ligne) {
+                texte.append(caractereDe(typeCase));
             }
+
             System.out.println(texte);
         }
     }
 
-    static char caractereDe(int typeDeCase) {
-        if (typeDeCase == Entite.OBSTACLE) return '#';
-        if (typeDeCase == Entite.JOUEUR) return 'P';
+    static char caractereDe(int typeCase) {
+        if (typeCase == Entite.OBSTACLE) return '#';
+        if (typeCase == Entite.JOUEUR) return 'P';
         return '.';
     }
 }

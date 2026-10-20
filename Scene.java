@@ -3,10 +3,10 @@ import java.util.List;
 
 public class Scene {
     public final List<Entite> entites;
-    public final BoiteEnglobante monde;
+    public final LimitesSpatiales monde;
     public final int[][] grille;
 
-    public Scene(List<Entite> entites, BoiteEnglobante monde, int[][] grille) {
+    public Scene(List<Entite> entites, LimitesSpatiales monde, int[][] grille) {
         this.entites = entites;
         this.monde = monde;
         this.grille = grille;
@@ -14,11 +14,13 @@ public class Scene {
 
     public List<Entite> joueurs() {
         List<Entite> joueurs = new ArrayList<>();
+
         for (Entite entite : entites) {
             if (entite.type == Entite.JOUEUR) {
                 joueurs.add(entite);
             }
         }
+
         return joueurs;
     }
 
@@ -26,8 +28,8 @@ public class Scene {
         for (Entite entite : entites) {
             if (estImmobile(entite)) continue;
 
-            entite.x += entite.vitesseX * duree;
-            entite.y += entite.vitesseY * duree;
+            entite.positionX += entite.vitesseX * duree;
+            entite.positionY += entite.vitesseY * duree;
 
             rebondirSurLesBordsDuMonde(entite);
         }
@@ -38,20 +40,23 @@ public class Scene {
     }
 
     private void rebondirSurLesBordsDuMonde(Entite entite) {
-        if (entite.x - entite.rayon < monde.xMin) {
-            entite.x = monde.xMin + entite.rayon;
+        if (entite.positionX - entite.rayon < monde.minimumX) {
+            entite.positionX = monde.minimumX + entite.rayon;
             entite.vitesseX = -entite.vitesseX;
         }
-        if (entite.x + entite.rayon > monde.xMax) {
-            entite.x = monde.xMax - entite.rayon;
+
+        if (entite.positionX + entite.rayon > monde.maximumX) {
+            entite.positionX = monde.maximumX - entite.rayon;
             entite.vitesseX = -entite.vitesseX;
         }
-        if (entite.y - entite.rayon < monde.yMin) {
-            entite.y = monde.yMin + entite.rayon;
+
+        if (entite.positionY - entite.rayon < monde.minimumY) {
+            entite.positionY = monde.minimumY + entite.rayon;
             entite.vitesseY = -entite.vitesseY;
         }
-        if (entite.y + entite.rayon > monde.yMax) {
-            entite.y = monde.yMax - entite.rayon;
+
+        if (entite.positionY + entite.rayon > monde.maximumY) {
+            entite.positionY = monde.maximumY - entite.rayon;
             entite.vitesseY = -entite.vitesseY;
         }
     }

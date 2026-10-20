@@ -2,13 +2,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public final class GenerateurDeScene {
+public final class GenerateurNiveau {
     private static final int NOMBRE_D_AMAS = 10;
     private static final double DIVISEUR_LARGEUR_ECART_TYPE_DES_AMAS = 30.0;
     private static final double FRACTION_RAYON_MINIMUM = 0.25;
     private static final double RAPPORT_RAYON_MAXIMUM_SUR_MINIMUM = 32.0;
 
-    private GenerateurDeScene() {}
+    private GenerateurNiveau() {}
 
     public enum Repartition { UNIFORME, REGROUPEE }
 
@@ -19,7 +19,7 @@ public final class GenerateurDeScene {
                                 double rayonDeReference, double vitesseMaximaleParAxe,
                                 long graine) {
         Random hasard = new Random(graine);
-        BoiteEnglobante monde = new BoiteEnglobante(0, 0, largeurMonde, largeurMonde);
+        LimitesSpatiales monde = new LimitesSpatiales(0, 0, largeurMonde, largeurMonde);
         double[][] centresDesAmas = tirerCentresDesAmas(hasard, largeurMonde);
         double ecartTypeDesAmas = largeurMonde / DIVISEUR_LARGEUR_ECART_TYPE_DES_AMAS;
 
@@ -39,6 +39,7 @@ public final class GenerateurDeScene {
             entite.vitesseY = tirerVitesse(hasard, vitesseMaximaleParAxe);
             entites.add(entite);
         }
+
         return new Scene(entites, monde, null);
     }
 
@@ -55,7 +56,8 @@ public final class GenerateurDeScene {
         if (tailles == Tailles.HOMOGENES) {
             return rayonDeReference;
         }
-        double facteurLogUniforme = Math.pow(RAPPORT_RAYON_MAXIMUM_SUR_MINIMUM, hasard.nextDouble());
+        double facteurLogUniforme = Math.pow(
+                RAPPORT_RAYON_MAXIMUM_SUR_MINIMUM, hasard.nextDouble());
         return rayonDeReference * FRACTION_RAYON_MINIMUM * facteurLogUniforme;
     }
 
