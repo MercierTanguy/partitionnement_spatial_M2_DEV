@@ -16,6 +16,10 @@ public class Main {
     static final double DUREE_ETAPE = 0.1;
 
     public static void main(String[] arguments) {
+        
+        int nombreEntites = 20;
+        int sizeWorld = 500;
+
         Scene sceneChargee = LecteurGrille.lireGrille(GRILLE);
         System.out.println("Carte : " + sceneChargee.entites.size()
                 + " entités, monde " + sceneChargee.monde);
@@ -26,7 +30,7 @@ public class Main {
                 + " position=(" + joueur.positionX + ", " + joueur.positionY + ")\n");
 
         Scene niveauAleatoire = GenerateurNiveau.generer(
-                1000, 500,
+                nombreEntites, sizeWorld,
                 GenerateurNiveau.Repartition.REGROUPEE,
                 GenerateurNiveau.Tailles.VARIABLES,
                 3.0,
@@ -47,6 +51,24 @@ public class Main {
                 NOMBRE_ETAPES,
                 premiereEntite.positionX,
                 premiereEntite.positionY);
+
+            
+        try {
+        MethodeBrute.executer(
+            sceneChargee,
+            joueur.positionX,
+            joueur.positionY,
+            nombreEntites
+        );
+
+        System.out.println(
+            "Rapport genere : rapport_force_brute.txt");
+
+        } catch (java.io.IOException e) {
+        System.err.println(
+            "Erreur lors de la generation du rapport : "
+            + e.getMessage());
+        }
     }
 
     static void afficherGrille(Scene scene) {
