@@ -6,23 +6,14 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
-/**
- * Quadtree 2D pour des entites circulaires de taille variable.
- *
- * Une entite est rangee dans le noeud le plus profond dont les limites
- * englobent entierement ses propres limites (AABB). Une grosse entite a cheval
- * sur une frontiere reste donc dans un noeud interne : c'est ce qui gere
- * naturellement les tailles tres variables.
- *
- * Utilise uniquement les classes existantes : Entite et LimitesSpatiales.
- */
+
 public class ArbreQuaternaire {
 
     static final class Noeud {
         final LimitesSpatiales limites;
         final int profondeur;
         final ArrayList<Entite> entites = new ArrayList<>();
-        Noeud[] enfants; // null tant que le noeud est une feuille
+        Noeud[] enfants; 
 
         Noeud(LimitesSpatiales limites, int profondeur) {
             this.limites = limites;
@@ -43,10 +34,9 @@ public class ArbreQuaternaire {
     private final int capacite;
     private final int profondeurMaximale;
 
-    // Entite -> noeud qui la contient (evite de modifier la classe Entite)
     private final IdentityHashMap<Entite, Noeud> noeudDe = new IdentityHashMap<>();
 
-    private long testsDeCollision; // paires reellement testees lors du dernier appel a collisions()
+    private long testsDeCollision;
 
     public ArbreQuaternaire(LimitesSpatiales monde, int capacite, int profondeurMaximale) {
         if (monde == null) {
@@ -57,9 +47,6 @@ public class ArbreQuaternaire {
         this.profondeurMaximale = profondeurMaximale;
     }
 
-    // ------------------------------------------------------------------
-    // Construction et mise a jour
-    // ------------------------------------------------------------------
 
     public void inserer(Entite entite) {
         LimitesSpatiales boite = entite.calculerLimites();
@@ -75,7 +62,7 @@ public class ArbreQuaternaire {
             }
 
             Noeud enfant = noeud.enfantQuiEnglobe(boite);
-            if (enfant == null) { // chevauche une frontiere : reste dans ce noeud
+            if (enfant == null) { 
                 ajouter(noeud, entite);
                 return;
             }
@@ -90,10 +77,6 @@ public class ArbreQuaternaire {
         }
     }
 
-    /**
-     * A appeler apres un deplacement. Ne fait rien si l'entite est toujours
-     * correctement placee, sinon la retire et la reinsere.
-     */
     public void mettreAJour(Entite entite) {
         Noeud noeud = noeudDe.get(entite);
 
@@ -144,7 +127,6 @@ public class ArbreQuaternaire {
             ajouter(enfant != null ? enfant : noeud, entite);
         }
 
-        // Si tout est tombe dans un seul enfant, on continue a diviser
         for (Noeud enfant : noeud.enfants) {
             if (enfant.entites.size() > capacite && enfant.profondeur < profondeurMaximale) {
                 diviser(enfant);
@@ -152,11 +134,6 @@ public class ArbreQuaternaire {
         }
     }
 
-    // ------------------------------------------------------------------
-    // Requetes
-    // ------------------------------------------------------------------
-
-    /** Entites dont le disque touche le rectangle donne. */
     public List<Entite> requeteRectangle(LimitesSpatiales zone) {
         List<Entite> resultat = new ArrayList<>();
         ArrayDeque<Noeud> pile = new ArrayDeque<>();
@@ -182,7 +159,6 @@ public class ArbreQuaternaire {
         return resultat;
     }
 
-    /** Entites dont le disque touche le cercle (centreX, centreY, rayonZone). */
     public List<Entite> requeteCercle(double centreX, double centreY, double rayonZone) {
         List<Entite> resultat = new ArrayList<>();
         ArrayDeque<Noeud> pile = new ArrayDeque<>();
@@ -220,10 +196,6 @@ public class ArbreQuaternaire {
         }
     }
 
-    /**
-     * k plus proches voisins du point (distance au centre, comme la force brute).
-     * Parcours "best-first" : on depile toujours le noeud ou l'entite la plus proche.
-     */
     public List<Entite> kPlusProches(double pointX, double pointY, int k) {
         List<Entite> resultat = new ArrayList<>();
         if (k <= 0) {
@@ -255,7 +227,6 @@ public class ArbreQuaternaire {
         return resultat;
     }
 
-    /** Toutes les paires d'entites en collision (meme test que la force brute). */
     public List<Entite[]> collisions() {
         List<Entite[]> resultat = new ArrayList<>();
         testsDeCollision = 0;
@@ -301,10 +272,6 @@ public class ArbreQuaternaire {
         }
     }
 
-    // ------------------------------------------------------------------
-    // Statistiques et visualisation
-    // ------------------------------------------------------------------
-
     public long obtenirTestsDeCollision() {
         return testsDeCollision;
     }
@@ -341,7 +308,6 @@ public class ArbreQuaternaire {
         return maximum;
     }
 
-    /** Limites de tous les noeuds, pour dessiner l'arbre. */
     public List<LimitesSpatiales> limitesDesNoeuds() {
         List<LimitesSpatiales> resultat = new ArrayList<>();
         ArrayDeque<Noeud> pile = new ArrayDeque<>();
