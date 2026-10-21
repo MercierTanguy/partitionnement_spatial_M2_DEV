@@ -6,24 +6,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Recherche spatiale par force brute.
- *
- * Utilise les classes existantes Entite et Scene.
- * Le rapport est genere dans rapport_force_brute.txt.
- */
 public class MethodeBrute {
 
     private static final String FICHIER_RAPPORT =
             "rapport_force_brute.txt";
 
     private MethodeBrute() {
-        // Classe utilitaire : pas d'instance necessaire.
     }
 
-    /**
-     * Associe une entite a sa distance au point recherche.
-     */
     private static class ResultatProximite {
         Entite entite;
         double distanceCarree;
@@ -32,16 +22,12 @@ public class MethodeBrute {
             this.entite = entite;
             this.distanceCarree = distanceCarree;
         }
+         @Override
+    public String toString() {
+        return entite.toString();
+    }
     }
 
-    /**
-     * Lance les recherches et genere le rapport complet.
-     *
-     * @param scene scene contenant les entites
-     * @param pointX abscisse du point de recherche
-     * @param pointY ordonnee du point de recherche
-     * @param k nombre d'entites les plus proches a rechercher
-     */
     public static void executer(
             Scene scene,
             double pointX,
@@ -61,14 +47,9 @@ public class MethodeBrute {
         List<Entite> entites = scene.entites;
         int nombreEntites = entites.size();
 
-        // Informations sur la memoire du processus Java.
         Runtime runtime = Runtime.getRuntime();
 
         long memoireDebut = memoireUtilisee(runtime);
-
-        // =====================================================
-        // 1. RECHERCHE DES K ENTITES LES PLUS PROCHES
-        // =====================================================
 
         long debutProximite = System.nanoTime();
 
@@ -83,7 +64,6 @@ public class MethodeBrute {
                     new ResultatProximite(entite, distanceCarree));
         }
 
-        // Tri de toutes les entites par distance croissante.
         Collections.sort(resultats,
                 Comparator.comparingDouble(
                         resultat -> resultat.distanceCarree));
@@ -97,16 +77,11 @@ public class MethodeBrute {
 
         long memoireApresProximite = memoireUtilisee(runtime);
 
-        // =====================================================
-        // 2. DETECTION DE TOUTES LES COLLISIONS
-        // =====================================================
-
         long debutCollisions = System.nanoTime();
 
         List<String> collisions = new ArrayList<>();
         long nombreComparaisons = 0;
 
-        // Chaque paire est examinee une seule fois.
         for (int i = 0; i < nombreEntites; i++) {
 
             Entite premiere = entites.get(i);
@@ -127,10 +102,6 @@ public class MethodeBrute {
         long tempsCollisions = System.nanoTime() - debutCollisions;
 
         long memoireApresCollisions = memoireUtilisee(runtime);
-
-        // =====================================================
-        // 3. GENERATION DU RAPPORT
-        // =====================================================
 
         long memoireFin = memoireUtilisee(runtime);
 
@@ -257,9 +228,6 @@ public class MethodeBrute {
         }
     }
 
-    /**
-     * Retourne une estimation de la memoire occupee dans le tas Java.
-     */
     private static long memoireUtilisee(Runtime runtime) {
         return runtime.totalMemory() - runtime.freeMemory();
     }
@@ -270,9 +238,6 @@ public class MethodeBrute {
                 + difference / 1024.0 + " Ko)";
     }
 
-    /**
-     * Compte les cellules de la grille existante.
-     */
     private static long nombreCellules(Scene scene) {
         if (scene.grille == null) {
             return 0;
