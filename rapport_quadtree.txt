@@ -1,0 +1,59 @@
+========================================
+ RAPPORT QUADTREE
+========================================
+
+1. TAILLE DE LA SCENE
+Nombre d'entites : 73
+Limites du monde : [0.0,0.0 -> 20.0,10.0]
+Capacite par noeud : 8 | profondeur maximale autorisee : 8
+
+2. CONSTRUCTION
+Temps : 46923800 ns (46.9238 ms)
+Nombre de noeuds : 21
+Profondeur atteinte : 2
+Variation memoire observee : 0 octets (0.0 Ko)
+
+3. RECHERCHE DES K PLUS PROCHES
+Point recherche : (9.5, 4.5)
+K demande : 20
+Nombre de resultats : 20
+Temps : 32414300 ns (32.4143 ms)
+1. Entite#34(9.5,4.5,rayon=0.4) | distance = 0.0
+2. Entite#43(6.5,6.5,rayon=0.5) | distance = 3.605551275463989
+3. Entite#47(11.5,7.5,rayon=0.5) | distance = 3.605551275463989
+4. Entite#9(9.5,0.5,rayon=0.5) | distance = 4.0
+5. Entite#8(8.5,0.5,rayon=0.5) | distance = 4.123105625617661
+6. Entite#10(10.5,0.5,rayon=0.5) | distance = 4.123105625617661
+7. Entite#46(6.5,7.5,rayon=0.5) | distance = 4.242640687119285
+8. Entite#48(12.5,7.5,rayon=0.5) | distance = 4.242640687119285
+9. Entite#11(11.5,0.5,rayon=0.5) | distance = 4.47213595499958
+10. Entite#7(7.5,0.5,rayon=0.5) | distance = 4.47213595499958
+11. Entite#42(5.5,6.5,rayon=0.5) | distance = 4.47213595499958
+12. Entite#26(13.5,2.5,rayon=0.5) | distance = 4.47213595499958
+13. Entite#25(5.5,2.5,rayon=0.5) | distance = 4.47213595499958
+14. Entite#12(12.5,0.5,rayon=0.5) | distance = 5.0
+15. Entite#62(9.5,9.5,rayon=0.5) | distance = 5.0
+16. Entite#49(13.5,7.5,rayon=0.5) | distance = 5.0
+17. Entite#6(6.5,0.5,rayon=0.5) | distance = 5.0
+18. Entite#61(8.5,9.5,rayon=0.5) | distance = 5.0990195135927845
+19. Entite#63(10.5,9.5,rayon=0.5) | distance = 5.0990195135927845
+20. Entite#60(7.5,9.5,rayon=0.5) | distance = 5.385164807134504
+
+4. DETECTION DES COLLISIONS
+Paires examinees : 329 (force brute : 2628)
+Collisions detectees : 0
+Temps : 196100 ns (0.1961 ms)
+
+5. BILAN MEMOIRE
+Memoire utilisee avant : 7398840 octets
+Memoire utilisee apres : 7398840 octets
+Variation globale observee : 0 octets (0.0 Ko)
+Attention : mesure indicative du tas Java, sensible au ramasse-miettes.
+
+6. COMPLEXITE THEORIQUE
+Construction : O(n log n) en moyenne
+Recherche des k plus proches : O(log n + k) en moyenne
+Requete de zone : O(log n + m), m = nombre de resultats
+Detection des collisions : O(n log n) en moyenne, O(n^2) au pire
+Mise a jour d'une entite : O(1) si elle reste dans son noeud, sinon O(profondeur)
+n = nombre d'entites de la scene

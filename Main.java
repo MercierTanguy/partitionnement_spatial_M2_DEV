@@ -16,7 +16,7 @@ public class Main {
     static final double DUREE_ETAPE = 0.1;
 
     public static void main(String[] arguments) {
-        
+
         int nombreEntites = 20;
         int sizeWorld = 500;
 
@@ -52,22 +52,27 @@ public class Main {
                 premiereEntite.positionX,
                 premiereEntite.positionY);
 
-            
         try {
-        MethodeBrute.executer(
-            sceneChargee,
-            joueur.positionX,
-            joueur.positionY,
-            nombreEntites
-        );
+            // Force brute (référence)
+            MethodeBrute.executer(
+                    sceneChargee,
+                    joueur.positionX,
+                    joueur.positionY,
+                    nombreEntites);
+            System.out.println("Rapport genere : rapport_force_brute.txt");
 
-        System.out.println(
-            "Rapport genere : rapport_force_brute.txt");
+            // Quadtree, sur la même scène pour comparer les deux rapports
+            MethodeQuadtree.executer(
+                    sceneChargee,
+                    joueur.positionX,
+                    joueur.positionY,
+                    nombreEntites);
+            System.out.println("Rapport genere : rapport_quadtree.txt");
 
         } catch (java.io.IOException e) {
-        System.err.println(
-            "Erreur lors de la generation du rapport : "
-            + e.getMessage());
+            System.err.println(
+                    "Erreur lors de la generation du rapport : "
+                    + e.getMessage());
         }
     }
 
